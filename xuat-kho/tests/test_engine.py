@@ -22,6 +22,13 @@ def source(count=2):
     return wb
 
 class EngineTests(unittest.TestCase):
+    def test_literal_equal_text_is_not_an_excel_formula(self):
+        wb=source(1)
+        wb.active['D4']='=2'
+        wb.active['D4'].data_type='s'
+        sheet=analyze(bytes_of(wb))[0]
+        self.assertTrue(sheet['errors'])
+        self.assertFalse(sheet['items'])
     def test_sample_exact_totals_and_template(self):
         sheets=analyze((ROOT/'samples/data-mau.xlsx').read_bytes())
         self.assertEqual([s['total'] for s in sheets],[593000,432000,544000,1569000])
@@ -65,7 +72,7 @@ class EngineTests(unittest.TestCase):
         wb=source();s=wb.active;s['A3']='Giá không chuẩn';s['C4']=20000;s['C5']=20000
         sheets=analyze(bytes_of(wb))
         self.assertEqual(sheets[0]['items'][0]['price'],10000)
-        s['B3']='Hàng';sheets=analyze(bytes_of(wb));self.assertFalse(sheets[0]['selected'])
+        s['B3']='Cột X';sheets=analyze(bytes_of(wb));self.assertFalse(sheets[0]['selected'])
         sheets=analyze(bytes_of(wb),{'Đơn hàng':{'header':3,'mapping':{'name':'B','quantity':'D','price':'A','amount':'C','unit':'E'}}})
         self.assertEqual(sheets[0]['total'],40000)
     def test_vietnamese_numbers_money_words(self):

@@ -1,0 +1,82 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "app.py",
+          "engine.py",
+          "image_import.py",
+          "dependencies.py",
+          "templates/Template.xlsx",
+          "image_tables.py"
+        ]
+      }
+    },
+    {
+      "src": "static/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(analyze|image-analyze|remap|export|health)",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/template",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/api/index.py"
+    },
+    {
+      "src": "/",
+      "dest": "/static/index.html"
+    },
+    {
+      "src": "/app.js",
+      "dest": "/static/app.js"
+    },
+    {
+      "src": "/image-import.js",
+      "dest": "/static/image-import.js"
+    },
+    {
+      "src": "/ocr/(.*)",
+      "dest": "/static/ocr/$1"
+    },
+    {
+      "src": "/theme/(.*)",
+      "dest": "/static/theme/$1"
+    },
+    {
+      "src": "/theme.css",
+      "dest": "/static/theme.css"
+    },
+    {
+      "src": "/style.css",
+      "dest": "/static/style.css"
+    },
+    {
+      "src": "/theme-switch.js",
+      "dest": "/static/theme-switch.js"
+    },
+    {
+      "src": "/image-regions.js",
+      "dest": "/static/image-regions.js"
+    },
+    {
+      "src": "/image-enhance.js",
+      "dest": "/static/image-enhance.js"
+    },
+    {
+      "src": "/.*",
+      "dest": "/api/index.py"
+    }
+  ]
+}
